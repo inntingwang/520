@@ -382,7 +382,9 @@ body.mode-desktop .g-item b{font-size:16px;}
 body.mode-desktop .g-item p{font-size:13.6px; line-height:1.75; margin-top:5px;}
 body.mode-desktop .guide-note{font-size:13px; margin-top:20px;}
 body.mode-desktop .guide-btns{margin-top:18px;}
-.foot-guide{margin-top:14px; background:none; border:0; font-family:var(--sans); font-weight:300; font-size:11px; letter-spacing:.2em; text-transform:uppercase; color:var(--ink-faint); display:block; margin-left:auto; margin-right:auto;}
+.gf-credit{margin-top:26px; font-family:var(--sans); font-weight:300; font-size:11.5px; letter-spacing:.08em; color:var(--ink-faint); line-height:2; text-align:center;}
+.gf-credit a{color:var(--red); text-decoration:none; letter-spacing:.13em; border-bottom:1px solid var(--gold-line); padding-bottom:1px; transition:.2s;}
+@media(hover:hover){.gf-credit a:hover{color:var(--red-deep); border-color:var(--red);}}
 
 .toast{position:fixed; left:50%; bottom:34px; transform:translateX(-50%) translateY(18px); z-index:90; background:rgba(58,48,37,.94); color:#e8dcc8; font-family:var(--serif); font-size:13px; letter-spacing:.06em; padding:12px 22px; border-radius:30px; opacity:0; transition:.3s; pointer-events:none;}
 .toast.show{opacity:1; transform:translateX(-50%) translateY(0);}
@@ -515,7 +517,7 @@ body.mode-tv:not(.gridview) .gallery-scroll::-webkit-scrollbar{display:none; wid
     <button class="dl-all" id="dlAllBottom"><svg viewBox="0 0 24 24"><path d="M12 3v12"/><path d="M7 11l5 4 5-4"/><path d="M4 20h16"/></svg>download all</button>
     <div class="dl-note">一鍵下載全部照片</div>
     <button class="back-top" id="backTop">back to top ↑</button>
-    <button class="foot-guide" id="footGuide">使用說明</button>
+    <div class="gf-credit">謝謝老崴，我們最棒的攝影師<br><a href="https://laoweiphotography.com" target="_blank" rel="noopener">laoweiphotography.com</a></div>
   </div>
   </div>
 </section>
@@ -758,7 +760,6 @@ function tryEnter(){if(pw.value.trim()===PW){try{localStorage.setItem('mf_auth',
 $('#enterBtn').onclick=tryEnter; pw.addEventListener('keydown',e=>{if(e.key==='Enter')tryEnter();});
 $('#guideEnter').onclick=()=>{markGuide();show('#gallery');};
 $('#guideBack').onclick=()=>show('#landing');
-$('#footGuide').onclick=()=>show('#guide');
 $('#goHome').onclick=()=>{try{localStorage.removeItem('mf_guide')}catch(e){};show('#landing');};
 function goLetter(n){document.querySelectorAll('.letter-page').forEach(p=>p.classList.toggle('active', p.dataset.p===String(n)));window.scrollTo(0,0);}
 $('#openLetters').onclick=()=>{show('#letters');goLetter(1);};
@@ -989,7 +990,7 @@ scrollThumb.addEventListener('pointerdown',e=>{
   let idleT=null, raf=null, on=false, pos=0, last=0;
   function sc(){ if(typeof isHoriz==='function' && isHoriz()) return {g:()=>galleryScroll.scrollLeft, s:v=>{galleryScroll.scrollLeft=v;}, m:()=>galleryScroll.scrollWidth-galleryScroll.clientWidth}; return {g:()=>window.scrollY, s:v=>window.scrollTo(0,v), m:()=>document.documentElement.scrollHeight-window.innerHeight}; }
   function canAuto(){ const g=document.querySelector('#gallery'), lb=document.querySelector('#lightbox'); return g&&g.classList.contains('active') && !(lb&&lb.classList.contains('open')); }
-  function step(ts){ if(!on)return; if(!canAuto()){stop();return;} if(!last)last=ts; const dt=Math.min(0.05,(ts-last)/1000); last=ts; const s=sc(), m=s.m(); pos+=SPEED*dt; if(m>0&&pos>=m)pos=0; s.s(pos); raf=requestAnimationFrame(step); }
+  function step(ts){ if(!on)return; if(!canAuto()){stop();return;} if(!last)last=ts; const dt=Math.min(0.05,(ts-last)/1000); last=ts; const s=sc(), m=s.m(); pos+=SPEED*dt; if(m>0&&pos>=m){pos=m;s.s(pos);stop();return;} s.s(pos); raf=requestAnimationFrame(step); }
   function start(){ if(on||!canAuto())return; on=true; pos=sc().g(); last=0; raf=requestAnimationFrame(step); }
   function stop(){ on=false; if(raf)cancelAnimationFrame(raf); raf=null; }
   function bump(){ stop(); clearTimeout(idleT); if(canAuto()) idleT=setTimeout(start, IDLE); }
