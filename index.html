@@ -317,12 +317,12 @@ body.mode-desktop .lb-body img{max-height:85vh;}
 .modal .mx{font-family:var(--serif); font-size:24px; color:var(--red);}
 .modal h3{font-family:var(--serif); margin:8px 0 14px; color:var(--ink); font-size:17px; letter-spacing:.08em; font-weight:500;}
 .modal p{font-family:var(--serif); font-size:13px; color:var(--ink-soft); line-height:1.95; margin:0 0 6px;}
-.modal .m-btns{display:flex; gap:11px; margin-top:22px;}
+.modal .m-btns{display:flex; gap:11px; margin-top:22px; justify-content:center; flex-wrap:wrap;}
 .modal .m-btns button{flex:1; border-radius:2px; padding:13px; font-family:var(--sans); font-weight:400; font-size:14px; letter-spacing:.08em;}
 .m-cancel{background:transparent; border:1px solid var(--line); color:var(--ink-soft);}
 .m-ok{background:var(--red); border:0; color:var(--ivory);}
 .modal .m-btns .m-cancel{flex:0 0 auto; padding-left:22px; padding-right:22px;}
-.modal .m-btns .m-ok{flex:1; white-space:nowrap;}
+.modal .m-btns .m-ok{flex:0 0 auto; white-space:nowrap; padding-left:24px; padding-right:24px;}
 
 /* 燈箱「關於下載」連結 */
 .lb-info{background:none; border:0; color:#e8dcc8; font-family:var(--serif); font-size:12px; letter-spacing:.06em; opacity:.72; text-decoration:underline; text-underline-offset:3px; padding:9px 14px;}
@@ -822,8 +822,9 @@ $('#viewToggle').onclick=function(){
 };
 
 /* 燈箱 */
-let lbIdx=0;
-function renderLb(){const p=curList[lbIdx];const img=$('#lbImg');const b=$('#lbBody');if(b)b.classList.remove('saving');img.src=p.f;$('#lbBg').style.backgroundImage=`url("${p.f}")`;$('#lbCount').textContent=String(lbIdx+1).padStart(2,'0')+' / '+curList.length;$('#lbSeries').textContent=p.s;$('#lbPrev').disabled=lbIdx<=0;$('#lbNext').disabled=lbIdx>=curList.length-1;img.classList.remove('in');void img.offsetWidth;img.classList.add('in');}
+let lbIdx=0, lbFullBlob=null;
+function renderLb(){const p=curList[lbIdx];const img=$('#lbImg');const b=$('#lbBody');if(b)b.classList.remove('saving');img.src=p.f;$('#lbBg').style.backgroundImage=`url("${p.f}")`;$('#lbCount').textContent=String(lbIdx+1).padStart(2,'0')+' / '+curList.length;$('#lbSeries').textContent=p.s;$('#lbPrev').disabled=lbIdx<=0;$('#lbNext').disabled=lbIdx>=curList.length-1;img.classList.remove('in');void img.offsetWidth;img.classList.add('in');
+  lbFullBlob=null; const fu=p.d||p.f; fetch(fu).then(r=>r.ok?r.blob():null).then(bl=>{if(bl)lbFullBlob={url:fu,blob:bl};}).catch(()=>{});}
 function openLightbox(i){lbIdx=i;renderLb();$('#lightbox').classList.add('open');if(window.__auto)window.__auto.stop();}
 function lbGo(d){const n=lbIdx+d;if(n<0||n>=curList.length)return;lbIdx=n;renderLb();}
 function lbClose(){$('#lightbox').classList.remove('open');
@@ -851,7 +852,25 @@ async function dl(url,name){
 const isIOS=/iP(hone|ad|od)/.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
 function iosTipHide(){const b=$('#lbBody');if(b)b.classList.remove('saving');}
 if(isIOS){$('#dlPhoto').innerHTML='<svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L6 20"/></svg>存到相簿';const im=$('#lbImg');if(im){im.addEventListener('contextmenu',iosTipHide);im.addEventListener('touchstart',iosTipHide,{passive:true});}}
-$('#dlPhoto').onclick=()=>{const p=curList[lbIdx];if(isIOS){const img=$('#lbImg');img.src=p.d||p.f;$('#lbBody').classList.add('saving');}else{const url=p.d||p.f;dl(url,p.s+'_'+String(lbIdx+1).padStart(3,'0')+'.jpg');toast('下載中…');}};
+$('#dlPhoto').onclick=async()=>{
+  const p=curList[lbIdx]; const url=p.d||p.f; const name=p.s+'_'+String(lbIdx+1).padStart(3,'0')+'.jpg';
+  const mobile = isIOS || /Android/i.test(navigator.userAgent);
+  if(mobile){
+    let shared=false;
+    try{
+      let b = (lbFullBlob && lbFullBlob.url===url) ? lbFullBlob.blob : null;
+      if(!b){ const r=await fetch(url); b=await r.blob(); }
+      const file=new File([b],name,{type:b.type||'image/jpeg'});
+      if(navigator.canShare && navigator.canShare({files:[file]})){
+        shared=true;
+        try{ await navigator.share({files:[file]}); }catch(e){}
+      }
+    }catch(e){}
+    if(!shared){ if(isIOS){ const img=$('#lbImg'); img.src=url; $('#lbBody').classList.add('saving'); } else { dl(url,name); toast('下載中…'); } }
+  } else {
+    dl(url,name); toast('下載中…');
+  }
+};
 $('#dlInfo').onclick=()=>$('#infoModal').classList.add('open');
 $('#infoClose').onclick=()=>$('#infoModal').classList.remove('open');
 $('#infoModal').addEventListener('click',e=>{if(e.target.id==='infoModal')$('#infoModal').classList.remove('open');});
