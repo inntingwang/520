@@ -130,7 +130,7 @@ body.mode-desktop .hero-img{object-position:0% 46%; transform:scale(1.23); trans
 .topbar.scrolled{background:transparent; backdrop-filter:none;}
 .topbar.scrolled .tb-btn{color:#fff; background:transparent; border-color:rgba(255,255,255,.7); box-shadow:none; text-shadow:0 1px 2px rgba(0,0,0,.28);}
 .topbar.scrolled .tb-btn svg{filter:drop-shadow(0 1px 1px rgba(0,0,0,.28));}
-.topbar.scrolled .tb-btn.active-view{color:var(--red); background:rgba(255,255,255,.9); border-color:#fff; text-shadow:none;}
+.topbar.scrolled .tb-btn.active-view{color:var(--ivory); background:var(--red); border-color:var(--red); text-shadow:none;}
 .topbar.scrolled .tb-x{opacity:1; color:#fff; text-shadow:0 1px 4px rgba(0,0,0,.32);}
 .topbar.scrolled .tb-hand{opacity:0;}
 
@@ -210,6 +210,7 @@ body.mode-desktop .poem .ln:not(.jn):not(:first-child)::before{content:"\A"; whi
 .reveal.in{opacity:1; transform:none;}
 
 .gallery-foot{text-align:center; padding:52px 34px 48px; color:var(--ink-soft);}
+body.mode-mobile .gallery-foot{min-height:100dvh; display:flex; flex-direction:column; justify-content:center; align-items:center; padding:66px 34px;}
 .gf-seal{width:60px; height:60px; margin:0 auto 18px; border:1px solid var(--red); border-radius:50%; display:flex; align-items:center; justify-content:center; color:var(--red); font-family:var(--serif); font-size:27px; position:relative;}
 .gf-seal:before{content:""; position:absolute; inset:5px; border:1px solid rgba(158,59,42,.28); border-radius:50%;}
 .gf-t{font-family:var(--serif); font-size:25px; letter-spacing:.42em; color:var(--ink); font-weight:500; text-indent:.42em;}
@@ -999,7 +1000,7 @@ scrollThumb.addEventListener('pointerdown',e=>{
   function bump(){ stop(); clearTimeout(idleT); if(canAuto()) idleT=setTimeout(start, IDLE); }
   function enter(){ stop(); clearTimeout(idleT); if(canAuto()) idleT=setTimeout(start, 1000); }
   /* 按在控制按鈕（音樂、下一首、導覽、篩選）上的點擊不算「在看照片」，不打斷輪播 */
-  const IGNORE='.topbar,.mus-btn,.np';
+  const IGNORE='.topbar,.mus-btn,.np,.fab,.fchip';
   function onInteract(e){ const t=e.target; if(t&&t.closest&&t.closest(IGNORE)) return; bump(); }
   ['wheel','touchstart','touchmove','pointerdown','keydown','mousedown'].forEach(ev=>window.addEventListener(ev,onInteract,{passive:true}));
   window.__auto={ bump:bump, enter:enter, stop:function(){stop();clearTimeout(idleT);} };
