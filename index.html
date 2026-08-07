@@ -838,7 +838,16 @@ document.addEventListener('keydown',e=>{if(!$('#lightbox').classList.contains('o
 let tsX=0;const lbBody=$('#lbBody');
 lbBody.addEventListener('touchstart',e=>{tsX=e.changedTouches[0].clientX;},{passive:true});
 lbBody.addEventListener('touchend',e=>{const dx=e.changedTouches[0].clientX-tsX;if(Math.abs(dx)>45)lbGo(dx<0?1:-1);},{passive:true});
-function dl(url,name){const a=document.createElement('a');a.href=url;a.download=name;document.body.appendChild(a);a.click();a.remove();}
+async function dl(url,name){
+  try{
+    const r=await fetch(url); if(!r.ok)throw 0;
+    const b=await r.blob(); const u=URL.createObjectURL(b);
+    const a=document.createElement('a');a.href=u;a.download=name;document.body.appendChild(a);a.click();a.remove();
+    setTimeout(()=>URL.revokeObjectURL(u),5000);
+  }catch(e){
+    const a=document.createElement('a');a.href=url;a.download=name;a.target='_blank';document.body.appendChild(a);a.click();a.remove();
+  }
+}
 const isIOS=/iP(hone|ad|od)/.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
 function iosTipHide(){const b=$('#lbBody');if(b)b.classList.remove('saving');}
 if(isIOS){$('#dlPhoto').innerHTML='<svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L6 20"/></svg>存到相簿';const im=$('#lbImg');if(im){im.addEventListener('contextmenu',iosTipHide);im.addEventListener('touchstart',iosTipHide,{passive:true});}}
