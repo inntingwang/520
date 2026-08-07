@@ -465,7 +465,7 @@ body.mode-tv:not(.gridview) .gallery-scroll::-webkit-scrollbar{display:none; wid
     <div class="guide-list">
       <div class="g-item"><span class="g-num">1</span><div><b>Tina 為您精選的懷舊歌曲</b><p>有背景音樂陪您回味，頂部左上可隨時暫停。</p></div></div>
       <div class="g-item"><span class="g-num">2</span><div><b>找照片</b><p>右上「快覽」可切換成縮圖格狀；右下角能依系列（<b>精選婚紗・正式照・小相機</b>）篩選。</p></div></div>
-      <div class="g-item"><span class="g-num">3</span><div><b>看大圖 · 下載單張</b><span class="g-imp">重要</span><p>點任一張看大圖，左右可切換。保存方式——<b>電腦／Android</b> 按「<b>下載這張</b>」會直接下載；<b>iPhone／iPad</b> 按「<b>存到相簿</b>」後，<b>長按照片 →「加入照片」</b>即可存進相簿。</p></div></div>
+      <div class="g-item"><span class="g-num">3</span><div><b>看大圖 · 下載單張</b><span class="g-imp">重要</span><p>點任一張看大圖，左右可切換。保存方式——<b>電腦</b>按「<b>下載這張</b>」會直接下載到電腦；<b>手機</b>（iPhone／Android）按「<b>存到相簿</b>」後，<b>長按照片不放</b>，iPhone 點「<b>加入照片</b>」、Android 點「<b>下載圖片</b>」，即可存進手機相簿。</p></div></div>
       <div class="g-item"><span class="g-num">4</span><div><b>一次下載全部</b><span class="g-imp">重要</span><p>按「<b>全部下載</b>」會前往<b>雲端相簿</b>，可線上瀏覽、整包下載（手機電腦都不會當）。所有照片皆為高畫質「<b>一般版</b>」，日常保存分享很夠；<b>原始檔</b>未主動提供，需要可聯繫 <b>Tina</b> 或 <b>佑宗</b> ♥</p></div></div>
     </div>
     <div class="guide-note">也別忘了翻翻我們寫給家人的〈告白信〉♡</div>
@@ -665,7 +665,7 @@ body.mode-tv:not(.gridview) .gallery-scroll::-webkit-scrollbar{display:none; wid
     <button class="lb-nav prev" id="lbPrev" aria-label="上一張"><svg viewBox="0 0 24 24"><polyline points="15 6 9 12 15 18"/></svg></button>
     <img id="lbImg" src="" alt="" />
     <button class="lb-nav next" id="lbNext" aria-label="下一張"><svg viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18"/></svg></button>
-    <div class="lb-iostip" id="iosTip"><span class="tip-tag">iPhone／iPad 存法</span><b>長按上面這張照片</b><br>選「加入照片／儲存影像」就存進相簿 📷</div>
+    <div class="lb-iostip" id="iosTip"><span class="tip-tag">存到手機相簿</span><b>長按上面這張照片不放</b><br>iPhone 點「加入照片」、Android 點「下載圖片」→ 存進相簿 📷</div>
   </div>
   <div class="lb-actions">
     <button class="lb-btn primary" id="dlPhoto"><svg viewBox="0 0 24 24"><path d="M12 3v12"/><path d="M7 11l5 4 5-4"/><path d="M4 20h16"/></svg>下載這張</button>
@@ -822,9 +822,9 @@ $('#viewToggle').onclick=function(){
 };
 
 /* 燈箱 */
-let lbIdx=0, lbFullBlob=null;
+let lbIdx=0;
 function renderLb(){const p=curList[lbIdx];const img=$('#lbImg');const b=$('#lbBody');if(b)b.classList.remove('saving');img.src=p.f;$('#lbBg').style.backgroundImage=`url("${p.f}")`;$('#lbCount').textContent=String(lbIdx+1).padStart(2,'0')+' / '+curList.length;$('#lbSeries').textContent=p.s;$('#lbPrev').disabled=lbIdx<=0;$('#lbNext').disabled=lbIdx>=curList.length-1;img.classList.remove('in');void img.offsetWidth;img.classList.add('in');
-  lbFullBlob=null; const fu=p.d||p.f; fetch(fu).then(r=>r.ok?r.blob():null).then(bl=>{if(bl)lbFullBlob={url:fu,blob:bl};}).catch(()=>{});}
+}
 function openLightbox(i){lbIdx=i;renderLb();$('#lightbox').classList.add('open');if(window.__auto)window.__auto.stop();}
 function lbGo(d){const n=lbIdx+d;if(n<0||n>=curList.length)return;lbIdx=n;renderLb();}
 function lbClose(){$('#lightbox').classList.remove('open');
@@ -850,23 +850,13 @@ async function dl(url,name){
   }
 }
 const isIOS=/iP(hone|ad|od)/.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
+const isAndroid=/Android/i.test(navigator.userAgent);
 function iosTipHide(){const b=$('#lbBody');if(b)b.classList.remove('saving');}
-if(isIOS){$('#dlPhoto').innerHTML='<svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L6 20"/></svg>存到相簿';const im=$('#lbImg');if(im){im.addEventListener('contextmenu',iosTipHide);im.addEventListener('touchstart',iosTipHide,{passive:true});}}
-$('#dlPhoto').onclick=async()=>{
+if(isIOS||isAndroid){$('#dlPhoto').innerHTML='<svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L6 20"/></svg>存到相簿';const im=$('#lbImg');if(im){im.addEventListener('contextmenu',iosTipHide);im.addEventListener('touchstart',iosTipHide,{passive:true});}}
+$('#dlPhoto').onclick=()=>{
   const p=curList[lbIdx]; const url=p.d||p.f; const name=p.s+'_'+String(lbIdx+1).padStart(3,'0')+'.jpg';
-  const mobile = isIOS || /Android/i.test(navigator.userAgent);
-  if(mobile){
-    let shared=false;
-    try{
-      let b = (lbFullBlob && lbFullBlob.url===url) ? lbFullBlob.blob : null;
-      if(!b){ const r=await fetch(url); b=await r.blob(); }
-      const file=new File([b],name,{type:b.type||'image/jpeg'});
-      if(navigator.canShare && navigator.canShare({files:[file]})){
-        shared=true;
-        try{ await navigator.share({files:[file]}); }catch(e){}
-      }
-    }catch(e){}
-    if(!shared){ if(isIOS){ const img=$('#lbImg'); img.src=url; $('#lbBody').classList.add('saving'); } else { dl(url,name); toast('下載中…'); } }
+  if(isIOS||isAndroid){
+    const img=$('#lbImg'); img.src=url; $('#lbBody').classList.add('saving');
   } else {
     dl(url,name); toast('下載中…');
   }
