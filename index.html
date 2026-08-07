@@ -845,10 +845,8 @@ async function dl(url,name){
     const b=await r.blob(); const u=URL.createObjectURL(b);
     const a=document.createElement('a');a.href=u;a.download=name;document.body.appendChild(a);a.click();a.remove();
     setTimeout(()=>URL.revokeObjectURL(u),5000);
-    toast('下載成功 ✓');
   }catch(e){
     const a=document.createElement('a');a.href=url;a.download=name;a.target='_blank';document.body.appendChild(a);a.click();a.remove();
-    toast('已開啟圖片');
   }
 }
 const isIOS=/iP(hone|ad|od)/.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
