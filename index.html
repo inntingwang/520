@@ -465,7 +465,7 @@ body.mode-tv:not(.gridview) .gallery-scroll::-webkit-scrollbar{display:none; wid
     <div class="guide-list">
       <div class="g-item"><span class="g-num">1</span><div><b>Tina 為您精選的懷舊歌曲</b><p>有背景音樂陪您回味，頂部左上可隨時暫停。</p></div></div>
       <div class="g-item"><span class="g-num">2</span><div><b>找照片</b><p>右上「快覽」可切換成縮圖格狀；右下角能依系列（<b>精選婚紗・正式照・小相機</b>）篩選。</p></div></div>
-      <div class="g-item"><span class="g-num">3</span><div><b>看大圖 · 下載單張</b><span class="g-imp">重要</span><p>點任一張看大圖，左右可切換。保存方式——<b>電腦</b>按「<b>下載這張</b>」會直接下載到電腦；<b>手機</b>（iPhone／Android）按「<b>存到相簿</b>」後，<b>長按照片不放</b>，iPhone 點「<b>加入照片</b>」、Android 點「<b>下載圖片</b>」，即可存進手機相簿。</p></div></div>
+      <div class="g-item"><span class="g-num">3</span><div><b>看大圖 · 下載單張</b><span class="g-imp">重要</span><p>點任一張看大圖，左右可切換。保存方式——<b>電腦</b>按「<b>下載這張</b>」直接下載；<b>手機</b>（iPhone／Android）<b>長按照片不放</b>，iPhone 點「<b>加入照片</b>」、Android 點「<b>下載圖片</b>」，即可存進手機相簿。<span style="opacity:.8">（iPhone 若一時找不到，照片會在相簿的「最近儲存項目」裡。）</span></p></div></div>
       <div class="g-item"><span class="g-num">4</span><div><b>一次下載全部</b><span class="g-imp">重要</span><p>按「<b>全部下載</b>」會前往<b>雲端相簿</b>，可線上瀏覽、整包下載（手機電腦都不會當）。所有照片皆為高畫質「<b>一般版</b>」，日常保存分享很夠；<b>原始檔</b>未主動提供，需要可聯繫 <b>Tina</b> 或 <b>佑宗</b> ♥</p></div></div>
     </div>
     <div class="guide-note">也別忘了翻翻我們寫給家人的〈告白信〉♡</div>
@@ -754,7 +754,7 @@ pw.addEventListener('focus',()=>$('#pwField').classList.add('focus'));
 pw.addEventListener('blur',()=>$('#pwField').classList.remove('focus'));
 function seenGuide(){try{return localStorage.getItem('mf_guide');}catch(e){return null;}}
 function markGuide(){try{localStorage.setItem('mf_guide','1');}catch(e){}}
-function tryEnter(){if(pw.value.trim()===PW){try{localStorage.setItem('mf_auth','1')}catch(e){}if(window.__music)window.__music.start();$('#pwHint').classList.remove('err');show(seenGuide()?'#gallery':'#guide');}else{$('#pwHint').classList.add('err');$('#pwHint').textContent='密碼不正確，再試一次';pw.value='';}}
+function tryEnter(){if(pw.value.trim()===PW){try{localStorage.setItem('mf_auth','1')}catch(e){}if(window.__music)window.__music.start();$('#pwHint').classList.remove('err');show('#guide');}else{$('#pwHint').classList.add('err');$('#pwHint').textContent='密碼不正確，再試一次';pw.value='';}}
 $('#enterBtn').onclick=tryEnter; pw.addEventListener('keydown',e=>{if(e.key==='Enter')tryEnter();});
 $('#guideEnter').onclick=()=>{markGuide();show('#gallery');};
 $('#guideBack').onclick=()=>show('#landing');
@@ -845,8 +845,10 @@ async function dl(url,name){
     const b=await r.blob(); const u=URL.createObjectURL(b);
     const a=document.createElement('a');a.href=u;a.download=name;document.body.appendChild(a);a.click();a.remove();
     setTimeout(()=>URL.revokeObjectURL(u),5000);
+    toast('下載成功 ✓');
   }catch(e){
     const a=document.createElement('a');a.href=url;a.download=name;a.target='_blank';document.body.appendChild(a);a.click();a.remove();
+    toast('已開啟圖片');
   }
 }
 const isIOS=/iP(hone|ad|od)/.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
