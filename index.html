@@ -209,15 +209,15 @@ body.mode-desktop .poem .ln:not(.jn):not(:first-child)::before{content:"\A"; whi
 .reveal{opacity:0; transform:translateY(18px); transition:opacity .5s ease, transform .5s ease;}
 .reveal.in{opacity:1; transform:none;}
 
-.gallery-foot{text-align:center; padding:72px 34px 60px; color:var(--ink-soft);}
-.gf-seal{width:64px; height:64px; margin:0 auto 26px; border:1px solid var(--red); border-radius:50%; display:flex; align-items:center; justify-content:center; color:var(--red); font-family:var(--serif); font-size:27px; position:relative;}
+.gallery-foot{text-align:center; padding:52px 34px 48px; color:var(--ink-soft);}
+.gf-seal{width:60px; height:60px; margin:0 auto 18px; border:1px solid var(--red); border-radius:50%; display:flex; align-items:center; justify-content:center; color:var(--red); font-family:var(--serif); font-size:27px; position:relative;}
 .gf-seal:before{content:""; position:absolute; inset:5px; border:1px solid rgba(158,59,42,.28); border-radius:50%;}
 .gf-t{font-family:var(--serif); font-size:25px; letter-spacing:.42em; color:var(--ink); font-weight:500; text-indent:.42em;}
-.gf-orn{display:flex; align-items:center; justify-content:center; gap:14px; margin:20px 0; color:var(--gold);}
+.gf-orn{display:flex; align-items:center; justify-content:center; gap:14px; margin:15px 0; color:var(--gold);}
 .gf-orn:before,.gf-orn:after{content:""; width:36px; height:1px; background:var(--gold-line);}
 .gf-orn span{font-size:11px; opacity:.85;}
 .gf-s{font-family:var(--serif); font-size:15px; letter-spacing:.14em; line-height:2.1; color:var(--ink-soft);}
-.gf-thread{width:1px; height:46px; background:linear-gradient(var(--gold-line),transparent); margin:36px auto 30px;}
+.gf-thread{width:1px; height:24px; background:linear-gradient(var(--gold-line),transparent); margin:18px auto 14px;}
 .gf-kicker{font-family:var(--sans); font-weight:300; font-size:10px; letter-spacing:.42em; text-transform:uppercase; color:var(--ink-faint); margin-bottom:16px;}
 .dl-all{background:transparent; color:var(--red); border:1px solid var(--red); border-radius:30px; padding:12px 28px; font-family:var(--sans); font-weight:300; font-size:12px; letter-spacing:.2em; text-transform:uppercase; display:inline-flex; align-items:center; gap:8px; transition:.2s;}
 .dl-all svg{width:14px;height:14px;stroke:currentColor;stroke-width:1.5;fill:none;}
@@ -226,7 +226,7 @@ body.mode-desktop .poem .ln:not(.jn):not(:first-child)::before{content:"\A"; whi
 .gf-sign{margin-top:52px;}
 .gf-sign img{width:158px; margin:0 auto 12px; opacity:.82;}
 .gf-date{font-family:var(--sans); font-weight:300; font-size:10px; letter-spacing:.34em; text-transform:uppercase; color:var(--ink-faint);}
-.back-top{margin-top:38px; background:none; border:0; font-family:var(--sans); font-weight:300; font-size:11px; letter-spacing:.24em; text-transform:uppercase; color:var(--ink-faint);}
+.back-top{margin-top:26px; background:none; border:0; font-family:var(--sans); font-weight:300; font-size:11px; letter-spacing:.24em; text-transform:uppercase; color:var(--ink-faint);}
 
 
 /* 浮動系列篩選（釘選、不擋畫面） */
@@ -382,7 +382,7 @@ body.mode-desktop .g-item b{font-size:16px;}
 body.mode-desktop .g-item p{font-size:13.6px; line-height:1.75; margin-top:5px;}
 body.mode-desktop .guide-note{font-size:13px; margin-top:20px;}
 body.mode-desktop .guide-btns{margin-top:18px;}
-.gf-credit{margin-top:26px; font-family:var(--sans); font-weight:300; font-size:11.5px; letter-spacing:.08em; color:var(--ink-faint); line-height:2; text-align:center;}
+.gf-credit{margin-top:20px; font-family:var(--sans); font-weight:300; font-size:11.5px; letter-spacing:.08em; color:var(--ink-faint); line-height:2; text-align:center;}
 .gf-credit a{color:var(--red); text-decoration:none; letter-spacing:.13em; border-bottom:1px solid var(--gold-line); padding-bottom:1px; transition:.2s;}
 @media(hover:hover){.gf-credit a:hover{color:var(--red-deep); border-color:var(--red);}}
 
@@ -516,8 +516,8 @@ body.mode-tv:not(.gridview) .gallery-scroll::-webkit-scrollbar{display:none; wid
     <div class="gf-kicker">the whole album</div>
     <button class="dl-all" id="dlAllBottom"><svg viewBox="0 0 24 24"><path d="M12 3v12"/><path d="M7 11l5 4 5-4"/><path d="M4 20h16"/></svg>download all</button>
     <div class="dl-note">一鍵下載全部照片</div>
-    <button class="back-top" id="backTop">back to top ↑</button>
     <div class="gf-credit">謝謝老崴，我們最棒的攝影師<br><a href="https://laoweiphotography.com" target="_blank" rel="noopener">laoweiphotography.com</a></div>
+    <button class="back-top" id="backTop">back to top ↑</button>
   </div>
   </div>
 </section>
@@ -959,7 +959,10 @@ scrollThumb.addEventListener('pointerdown',e=>{
   [A,B].forEach(a=>a.addEventListener('timeupdate',function(){if(!started||!musicOn||this!==active)return;const d=this.duration;if(d&&(d-this.currentTime)<=XF&&this.currentTime>1)arm();}));
   [A,B].forEach(a=>a.addEventListener('ended',function(){if(this===active&&!arming&&musicOn)arm();}));
   window.__music={
-    start:function(){if(started)return;started=true;idx=0;order=firstOrder();active.src=enc(order[0]);active.volume=0;notify();if(musicOn){active.play().then(()=>fade(active,1,2)).catch(()=>{});}},
+    start:function(){if(started)return;started=true;idx=0;order=firstOrder();active.src=enc(order[0]);active.volume=0;notify();
+      /* iOS：在使用者手勢內把 standby 也解鎖，之後淡入淡出換歌才播得出來 */
+      try{standby.src=enc(order[0]);const pp=standby.play();if(pp&&pp.then)pp.then(()=>{try{standby.pause();standby.currentTime=0;}catch(e){}}).catch(()=>{});}catch(e){}
+      if(musicOn){active.play().then(()=>fade(active,1,2)).catch(()=>{});}},
     apply:function(on){if(!started)return;if(on){active.play().catch(()=>{});fade(active,1,1);}else{fade(active,0,.3);fade(standby,0,.3);}},
     next:function(){if(started&&!arming)arm(0.8);},
     current:function(){return META[order[idx]]||null;}
